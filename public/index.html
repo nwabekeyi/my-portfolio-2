@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chidiebere Nwabekeyi — Backend-Heavy Fullstack Engineer</title>
+<meta name="description" content="Chidiebere Nwabekeyi — backend-heavy fullstack engineer. React, NestJS, Django, Spring, Flask. Systems for fintech, education and travel, shipped and running in production.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-void: #0A0C10;
+    --bg-surface: #12151C;
+    --bg-surface-2: #191D27;
+    --text-primary: #E9EBEF;
+    --text-muted: #7C8296;
+    --text-dim: #4A4F60;
+    --accent-amber: #F0B429;
+    --accent-teal: #34D399;
+    --accent-red: #F2757A;
+    --line: #242836;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --sans: 'Inter', -apple-system, sans-serif;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background: var(--bg-void);
+    color: var(--text-primary);
+    font-family: var(--sans);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+
+  body::before{
+    content:'';
+    position:fixed; inset:0;
+    background-image:
+      radial-gradient(circle at 15% 8%, rgba(240,180,41,0.06), transparent 40%),
+      radial-gradient(circle at 85% 92%, rgba(52,211,153,0.05), transparent 40%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 32px; position:relative; z-index:1; }
+
+  a{ color:inherit; text-decoration:none; }
+
+  ::selection{ background: var(--accent-amber); color:#0A0C10; }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background: rgba(10,12,16,0.72);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1120px; margin:0 auto; padding:18px 32px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{
+    font-family:var(--mono); font-size:14px; color:var(--text-primary);
+    display:flex; align-items:center; gap:2px;
+  }
+  .logo .cursor{
+    display:inline-block; width:8px; height:16px; background:var(--accent-amber);
+    margin-left:4px; animation:blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+  .nav-links{ display:flex; gap:32px; font-family:var(--mono); font-size:13px; color:var(--text-muted); }
+  .nav-links a{ position:relative; transition:color .2s; }
+  .nav-links a:hover{ color:var(--accent-amber); }
+  .nav-links a::before{ content:'· '; color:var(--accent-teal); }
+  @media (max-width: 720px){ .nav-links{ display:none; } }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding-top:120px; padding-bottom:80px;
+    position:relative;
+  }
+
+  .terminal{
+    font-family:var(--mono); font-size:13px; color:var(--text-muted);
+    background:var(--bg-surface); border:1px solid var(--line); border-radius:8px;
+    padding:18px 22px; max-width:560px; margin-bottom:44px;
+    min-height:118px;
+  }
+  .terminal .line{ opacity:0; white-space:pre-wrap; }
+  .terminal .prompt{ color:var(--accent-teal); }
+  .terminal .out{ color:var(--text-primary); }
+
+  .hero h1{
+    font-family:var(--mono); font-weight:700;
+    font-size:clamp(34px, 6vw, 68px);
+    letter-spacing:-0.02em;
+    line-height:1.05;
+    max-width:900px;
+    opacity:0; transform:translateY(16px);
+  }
+  .hero h1 .accent{ color:var(--accent-amber); }
+
+  .hero .role{
+    font-family:var(--sans); font-weight:600; font-size:clamp(16px,2.4vw,20px);
+    color:var(--text-muted); margin-top:18px; max-width:640px;
+    opacity:0; transform:translateY(16px);
+  }
+
+  .hero .pitch{
+    margin-top:16px; max-width:560px; color:var(--text-muted); font-size:15.5px;
+    opacity:0; transform:translateY(16px);
+  }
+
+  .hero .cta-row{ display:flex; gap:14px; margin-top:36px; flex-wrap:wrap; opacity:0; transform:translateY(16px); }
+  .btn{
+    font-family:var(--mono); font-size:13px; padding:12px 22px; border-radius:6px;
+    border:1px solid var(--line); transition:all .25s;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-primary{ background:var(--accent-amber); color:#14140f; border-color:var(--accent-amber); font-weight:600; }
+  .btn-primary:hover{ box-shadow:0 0 0 4px rgba(240,180,41,0.15); transform:translateY(-1px); }
+  .btn-ghost{ color:var(--text-primary); }
+  .btn-ghost:hover{ border-color:var(--accent-teal); color:var(--accent-teal); }
+
+  .fade-in{ animation:fadeUp .7s ease forwards; }
+  @keyframes fadeUp{ to{ opacity:1; transform:translateY(0); } }
+
+  /* network diagram */
+  .netmap{ position:absolute; right:-40px; top:110px; width:440px; opacity:0.9; }
+  .netmap svg{ width:100%; height:auto; }
+  .netmap .node{ fill:var(--bg-surface); stroke:var(--line); stroke-width:1.4; }
+  .netmap .node-label{ font-family:var(--mono); font-size:9px; fill:var(--text-muted); }
+  .netmap .edge{ stroke:var(--line); stroke-width:1.4; fill:none; }
+  .netmap .pulse{ fill:var(--accent-amber); filter:drop-shadow(0 0 4px var(--accent-amber)); }
+  @media (max-width: 980px){ .netmap{ display:none; } }
+
+  /* ---------- STACK TICKER ---------- */
+  .ticker-section{ border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--bg-surface); overflow:hidden; padding:18px 0; }
+  .ticker-track{ display:flex; gap:48px; white-space:nowrap; animation:scroll 32s linear infinite; width:max-content; }
+  .ticker-track span{ font-family:var(--mono); font-size:14px; color:var(--text-muted); display:flex; align-items:center; gap:10px; }
+  .ticker-track span::before{ content:'▹'; color:var(--accent-teal); }
+  @keyframes scroll{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+
+  /* ---------- SECTION shared ---------- */
+  section{ padding:110px 0; position:relative; }
+  .eyebrow{ font-family:var(--mono); font-size:12px; color:var(--accent-teal); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:14px; }
+  .sec-title{ font-family:var(--mono); font-weight:700; font-size:clamp(26px,4vw,38px); letter-spacing:-0.01em; margin-bottom:20px; }
+  .sec-sub{ color:var(--text-muted); max-width:600px; font-size:15.5px; margin-bottom:56px; }
+
+  .reveal{ opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* ---------- ABOUT / SKILLS ---------- */
+  .about-grid{ display:grid; grid-template-columns: 1.1fr 1fr; gap:64px; align-items:start; }
+  @media (max-width: 860px){ .about-grid{ grid-template-columns:1fr; } }
+  .about-text p{ color:var(--text-muted); margin-bottom:16px; font-size:15.5px; }
+  .about-text strong{ color:var(--text-primary); }
+
+  .code-block{
+    background:var(--bg-surface); border:1px solid var(--line); border-radius:8px;
+    font-family:var(--mono); font-size:13px; overflow:hidden;
+  }
+  .code-block .cb-head{ display:flex; gap:6px; padding:12px 16px; border-bottom:1px solid var(--line); }
+  .code-block .cb-head span{ width:10px; height:10px; border-radius:50%; background:var(--line); }
+  .code-block .cb-body{ padding:20px; color:var(--text-muted); }
+  .code-block .key{ color:var(--accent-amber); }
+  .code-block .str{ color:var(--accent-teal); }
+  .code-block .brace{ color:var(--text-dim); }
+  .code-block .cb-body div{ margin-bottom:6px; }
+  .code-block .cb-body .indent{ padding-left:20px; }
+
+  /* ---------- PROJECTS / STATUS BOARD ---------- */
+  .board-head{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;
+    font-family:var(--mono); font-size:12px; color:var(--text-dim); border-bottom:1px solid var(--line);
+    padding-bottom:14px; margin-bottom:8px;
+  }
+  .legend{ display:flex; gap:18px; flex-wrap:wrap; }
+  .legend span{ display:flex; align-items:center; gap:6px; }
+  .dot{ width:7px; height:7px; border-radius:50%; display:inline-block; }
+  .dot-live{ background:var(--accent-teal); box-shadow:0 0 6px var(--accent-teal); }
+  .dot-ongoing{ background:var(--accent-amber); box-shadow:0 0 6px var(--accent-amber); }
+  .dot-private{ background:var(--accent-red); box-shadow:0 0 6px var(--accent-red); }
+
+  .project-grid{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--line); border:1px solid var(--line); margin-top:1px; }
+  .project-card{
+    background:var(--bg-surface); padding:30px 32px; display:grid;
+    grid-template-columns: 1fr 1.4fr auto; gap:28px; align-items:center;
+    transition:background .25s;
+  }
+  .project-card:hover{ background:var(--bg-surface-2); }
+  @media (max-width:900px){ .project-card{ grid-template-columns:1fr; } }
+
+  .p-id{ font-family:var(--mono); }
+  .p-status{ display:flex; align-items:center; gap:8px; font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px; }
+  .p-name{ font-size:17px; font-weight:600; color:var(--text-primary); }
+  .p-role{ font-size:12px; color:var(--text-dim); margin-top:4px; }
+
+  .p-body p{ color:var(--text-muted); font-size:14.5px; margin-bottom:12px; }
+  .p-stack{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+  .chip{ font-family:var(--mono); font-size:11px; padding:4px 9px; border:1px solid var(--line); border-radius:4px; color:var(--text-muted); }
+  .p-deploy{ font-family:var(--mono); font-size:11.5px; color:var(--text-dim); }
+  .p-deploy .arrow{ color:var(--accent-teal); }
+
+  .p-actions{ display:flex; flex-direction:column; gap:10px; align-items:flex-start; }
+  @media (max-width:900px){ .p-actions{ flex-direction:row; flex-wrap:wrap; } }
+  .p-actions .btn{ padding:9px 16px; font-size:12px; }
+  .badge-interview{
+    font-family:var(--mono); font-size:11px; color:var(--accent-red); border:1px dashed var(--accent-red);
+    padding:8px 12px; border-radius:6px; max-width:190px; line-height:1.4;
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact{ text-align:center; }
+  .contact .sec-title{ margin-bottom:16px; }
+  .contact-links{ display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-top:36px; }
+
+  footer{ border-top:1px solid var(--line); padding:32px 0; }
+  .footer-inner{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; font-family:var(--mono); font-size:12px; color:var(--text-dim); }
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+  }
+
+  a:focus-visible, button:focus-visible{ outline:2px solid var(--accent-amber); outline-offset:3px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">chidiebere@dev:~$<span class="cursor"></span></div>
+    <div class="nav-links">
+      <a href="#stack">stack</a>
+      <a href="#work">work</a>
+      <a href="#about">about</a>
+      <a href="#contact">contact</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <div class="terminal" id="terminal">
+    <div class="line"><span class="prompt">$</span> whoami</div>
+    <div class="line out">&gt; Chidiebere Nwabekeyi</div>
+    <div class="line"><span class="prompt">$</span> status --production</div>
+    <div class="line out">&gt; 7 systems shipped · payments, education, travel &amp; live trading running now</div>
+  </div>
+
+  <h1 id="h1">I build the backend<br>most people <span class="accent">never see.</span></h1>
+  <p class="role" id="role">Backend-heavy fullstack engineer — React · NestJS · ExpressJS · Django · Flask · Spring</p>
+  <p class="pitch" id="pitch">Fintech backends, school systems, travel platforms and a live trading bot — designed, deployed and kept running, from VPS boxes to PaaS to AWS.</p>
+  <div class="cta-row" id="cta">
+    <a href="#work" class="btn btn-primary">View the work</a>
+    <a href="#contact" class="btn btn-ghost">Get in touch</a>
+  </div>
+
+  <div class="netmap">
+    <svg viewBox="0 0 440 380" fill="none">
+      <path class="edge" d="M220 40 L120 130" />
+      <path class="edge" d="M220 40 L320 130" />
+      <path class="edge" d="M120 130 L120 220" />
+      <path class="edge" d="M320 130 L320 220" />
+      <path class="edge" d="M120 220 L220 300" />
+      <path class="edge" d="M320 220 L220 300" />
+
+      <circle class="node" cx="220" cy="40" r="26"/>
+      <text class="node-label" x="220" y="44" text-anchor="middle">CLIENT</text>
+
+      <circle class="node" cx="120" cy="130" r="24"/>
+      <text class="node-label" x="120" y="134" text-anchor="middle">JAVASCRIPT</text>
+
+      <circle class="node" cx="320" cy="130" r="24"/>
+      <text class="node-label" x="320" y="134" text-anchor="middle">API GW</text>
+
+      <circle class="node" cx="120" cy="220" r="24"/>
+      <text class="node-label" x="120" y="224" text-anchor="middle">PYTHON</text>
+
+      <circle class="node" cx="320" cy="220" r="24"/>
+      <text class="node-label" x="320" y="224" text-anchor="middle">JAVA</text>
+
+      <circle class="node" cx="220" cy="300" r="26"/>
+      <text class="node-label" x="220" y="304" text-anchor="middle">DATABASE</text>
+
+      <circle class="pulse" r="3.4">
+        <animateMotion dur="3.2s" repeatCount="indefinite" path="M220 40 L120 130 L120 220 L220 300" />
+      </circle>
+      <circle class="pulse" r="3.4">
+        <animateMotion dur="3.6s" begin="0.8s" repeatCount="indefinite" path="M220 40 L320 130 L320 220 L220 300" />
+      </circle>
+    </svg>
+  </div>
+</header>
+
+<div class="ticker-section" id="stack">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<section id="about">
+  <div class="wrap">
+    <div class="eyebrow reveal">// about</div>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p><strong>I'm Chidiebere Nwabekeyi</strong>, a backend-heavy fullstack engineer. I'm comfortable owning a product end to end, but the part I care about most is what's underneath the interface — the auth, the data model, the job queue, the third-party integration that has to hold up in production.</p>
+        <p>That's shown up as a school's registration system, a Hajj &amp; Umrah booking platform, a bot wired into a live trading API, and backend work on two fintech products handling cards, loans and escrow.</p>
+        <p>I've shipped on <strong>VPS boxes</strong> (Truehost, Contabo), <strong>PaaS</strong> (Render, Vercel), and I work comfortably with <strong>AWS</strong> — picking the deploy target that fits the system, not the other way around.</p>
+      </div>
+      <div class="code-block reveal">
+        <div class="cb-head"><span></span><span></span><span></span></div>
+        <div class="cb-body">
+          <div class="brace">{</div>
+          <div class="indent"><span class="key">"languages"</span>: [<span class="str">"JavaScript"</span>, <span class="str">"Python"</span>, <span class="str">"Java"</span>],</div>
+          <div class="indent"><span class="key">"backend"</span>: [<span class="str">"NestJS"</span>, <span class="str">"ExpressJS"</span>, <span class="str">"Django"</span>, <span class="str">"Flask"</span>, <span class="str">"Spring"</span>],</div>
+          <div class="indent"><span class="key">"frontend"</span>: [<span class="str">"React"</span>, <span class="str">"TypeScript"</span>],</div>
+          <div class="indent"><span class="key">"data"</span>: [<span class="str">"PostgreSQL"</span>, <span class="str">"MySQL"</span>, <span class="str">"SQL Server"</span> <span class="str">"MongoDB"</span>, <span class="str">"Prisma"</span>],</div>
+          <div class="indent"><span class="key">"deploy"</span>: [<span class="str">"Render"</span>, <span class="str">"Vercel"</span>, <span class="str">"VPS"</span>, <span class="str">"AWS"</span>]</div>
+          <div class="brace">}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap">
+    <div class="eyebrow reveal">// work</div>
+    <h2 class="sec-title reveal">Systems, status: live.</h2>
+    <p class="sec-sub reveal">Seven builds — full-stack and backend-only — across education, travel, and fintech. Company backend work is shown by proof at interview, not by public repo.</p>
+
+    <div class="board-head reveal">
+      <span>./projects --all</span>
+      <div class="legend">
+        <span><i class="dot dot-live"></i>live</span>
+        <span><i class="dot dot-ongoing"></i>ongoing</span>
+        <span><i class="dot dot-private"></i>private</span>
+      </div>
+    </div>
+
+    <div class="project-grid" id="projectGrid"></div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap contact reveal">
+    <div class="eyebrow">// contact</div>
+    <h2 class="sec-title">Let's build something that has to work.</h2>
+    <p class="sec-sub" style="margin-left:auto;margin-right:auto;">Open to backend-heavy fullstack roles and contract builds. Reach out below.</p>
+    <div class="contact-links">
+      <a href="mailto:chidi90simeon@gmail.com" class="btn btn-primary">chidi90simeon@gmail.com</a>
+      <a href="https://github.com/nwabekeyi" class="btn btn-ghost">GitHub</a>
+      <a href="https://www.linkedin.com/in/chidiebere-nwabekeyi-428a8488" class="btn btn-ghost">LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <span>chidiebere@dev:~$ echo "thanks for scrolling"</span>
+    <span>&copy; 2026 Chidiebere Nwabekeyi</span>
+  </div>
+</footer>
+
+<script>
+// ---- terminal typewriter ----
+(function(){
+  const lines = document.querySelectorAll('#terminal .line');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduced){ lines.forEach(l=>l.style.opacity=1); return; }
+
+  let delay = 200;
+  lines.forEach((line, i)=>{
+    const text = line.textContent;
+    line.textContent = '';
+    line.style.opacity = 1;
+    setTimeout(()=>{
+      let idx = 0;
+      const speed = 18;
+      const iv = setInterval(()=>{
+        line.textContent += text[idx];
+        idx++;
+        if(idx >= text.length) clearInterval(iv);
+      }, speed);
+    }, delay);
+    delay += text.length * 18 + 260;
+  });
+
+  setTimeout(()=>{
+    ['h1','role','pitch','cta'].forEach((id,i)=>{
+      setTimeout(()=> document.getElementById(id).classList.add('fade-in'), i*140);
+    });
+  }, delay + 200);
+})();
+
+// ---- stack ticker ----
+(function(){
+  const items = ['React','NestJS','ExpressJS','Django','Flask','Spring','JavaScript','Python','Java','PostgreSQL', "MySQL", 'MongoDB','Prisma','Render','Vercel','VPS','AWS'];
+  const track = document.getElementById('tickerTrack');
+  const html = items.map(i=>`<span>${i}</span>`).join('');
+  track.innerHTML = html + html; // duplicate for seamless loop
+})();
+
+// ---- scroll reveal ----
+(function(){
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold:0.15 });
+  els.forEach(el=> io.observe(el));
+})();
+
+// ---- projects data + render ----
+(function(){
+  const projects = [
+    {
+      status:'live', name:'Crystalland Academy', role:'Full build',
+      desc:'School management system — student records, staff and admin workflows for the academy.',
+      stack:['React','ExpressJS','MongoDB'], deploy:'Truehost VPS',
+      links:[{label:'Visit site', href:'https://www.crystallandacademy.com', primary:true}]
+    },
+    {
+      status:'live', name:'Assembly Travels', role:'Full build',
+      desc:'Hajj &amp; Umrah travel portal with a Django-admin-driven back office for managing bookings and packages.',
+      stack:['React','Django','Django Admin','PostgreSQL'], deploy:'Contabo VPS',
+      links:[{label:'Visit site', href:'http://assemblytravels.com/', primary:true}]
+    },
+    {
+      status:'private', name:'Jennifer TradingBot', role:'Backend build',
+      desc:'Automated trading bot wired into the cTrader API to place live trades.',
+      stack:['Python','cTrader API'], deploy:'Render',
+      links:[], note:'Live trading system — codebase kept private.'
+    },
+    {
+      status:'private', name:'Resolve — Backbone Finance', role:'Backend only · contract',
+      desc:'Backend for a crypto web trading app, built as contract staff for Backbone Finance, Onikan.',
+      stack:['NestJS','PostgreSQL','Prisma'], deploy:'Client-managed',
+      links:[], note:'Company codebase — shown at interview for privacy reasons.'
+    },
+    {
+      status:'ongoing', name:'OgaBoss', role:'Backend build',
+      desc:'Crypto &amp; fintech app with payment cards, loans and billing, currently live and growing.',
+      stack:['NestJS','Prisma','PostgreSQL'], deploy:'Production',
+      links:[{label:'Visit site', href:'https://www.ogaboss.io/', primary:true}]
+    },
+    {
+      status:'live', name:'AB-Hub NERD Registration', role:'Full build',
+      desc:'Mass-registration platform for a licensed NERD registration client — generates worker links and a dashboard to track performance, store data and revoke access at scale.',
+      stack:['TypeScript','Express','MongoDB','JavaScript'], deploy:'Firebase Hosting',
+      links:[{label:'Visit site', href:'https://ab-hub-480fd.web.app/', primary:true}]
+    },
+    {
+      status:'ongoing', name:'PayGuard', role:'Full build',
+      desc:'Escrow app with Paystack payment integration, currently in development.',
+      stack:['Spring Boot','React','PostgreSQL','Paystack'], deploy:'→ Contabo VPS (planned)',
+      links:[]
+    }
+  ];
+
+  const statusMeta = {
+    live:{ label:'live', dot:'dot-live' },
+    ongoing:{ label:'ongoing', dot:'dot-ongoing' },
+    private:{ label:'private', dot:'dot-private' }
+  };
+
+  const grid = document.getElementById('projectGrid');
+  grid.innerHTML = projects.map(p=>{
+    const meta = statusMeta[p.status];
+    const linksHtml = p.links.map(l=>`<a class="btn ${l.primary?'btn-primary':'btn-ghost'}" href="${l.href}" target="_blank" rel="noopener">${l.label}</a>`).join('');
+    const noteHtml = p.note ? `<div class="badge-interview">${p.note}</div>` : '';
+    return `
+    <div class="project-card reveal">
+      <div class="p-id">
+        <div class="p-status"><i class="dot ${meta.dot}"></i>${meta.label}</div>
+        <div class="p-name">${p.name}</div>
+        <div class="p-role">${p.role}</div>
+      </div>
+      <div class="p-body">
+        <p>${p.desc}</p>
+        <div class="p-stack">${p.stack.map(s=>`<span class="chip">${s}</span>`).join('')}</div>
+        <div class="p-deploy"><span class="arrow">→</span> deploy: ${p.deploy}</div>
+      </div>
+      <div class="p-actions">${linksHtml}${noteHtml}</div>
+    </div>`;
+  }).join('');
+
+  // observe newly injected reveal cards
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold:0.1 });
+  document.querySelectorAll('#projectGrid .reveal').forEach(el=> io.observe(el));
+})();
+</script>
+
+</body>
+</html>
